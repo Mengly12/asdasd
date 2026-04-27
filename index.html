@@ -1,13 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>My Portfolio</title>
-</head>
-<body>
-    <h1></h1>
-    <!-- <p>Daim Vanndy</p> -->
-</body>
-</html>
+<div class="form-container">
+    <h2>Send to telegram bot</h2>
+    <form id="telegramForm">
+        <input type="text" name="name" placeholder="ឈ្មោះរបស់អ្នក" required><br><br>
+        <textarea name="message" placeholder="សាររបស់អ្នក" required></textarea><br><br>
+        <button type="submit">ផ្ញើសារឥឡូវនេះ</button>
+    </form>
+    <p id="status"></p>
+</div>
+
+<script>
+    const form = document.getElementById('telegramForm');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const name = formData.get('name');
+        const message = formData.get('message');
+
+        const fullMessage = `មានសារថ្មី!%0A👤 ឈ្មោះ: ${name}%0A💬 សារ: ${message}`;
+
+        const token = "8604402391:AAEZFBeOWAwu3CEs51sAGNx0CMkV4riJA8c"; 
+        const chatId = "8627330712"; 
+        
+        const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${fullMessage}`;
+
+        status.innerText = "កំពុងផ្ញើ...";
+
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    status.style.color = "green";
+                    status.innerText = "✅ ផ្ញើជោគជ័យ! សារបានទៅដល់ Telegram ហើយ។";
+                    form.reset();
+                } else {
+                    status.innerText = "❌ មានបញ្ហា! សូមពិនិត្យ Token ឬ Chat ID។";
+                }
+            })
+            .catch(error => {
+                status.innerText = "❌ Error: " + error;
+            });
+    });
+</script>
